@@ -1,29 +1,51 @@
-import React, { useState } from 'react';
-import { Plus } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Plus, Check } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { ReceiptTemplate } from '../utils/receipt';
 
 interface ItemFormProps {
   onAdd: (item: { name: string; price: number; quantity: number; description?: string }) => void;
+  onEdit?: (item: { name: string; price: number; quantity: number; description?: string }, index: number) => void;
   template: ReceiptTemplate;
+  editingItem?: { name: string; price: number; quantity: number; description?: string };
+  editingIndex?: number;
 }
 
-const ItemForm: React.FC<ItemFormProps> = ({ onAdd, template }) => {
+const ItemForm: React.FC<ItemFormProps> = ({ onAdd, onEdit, template, editingItem, editingIndex }) => {
+  const { t, i18n } = useTranslation();
   const [item, setItem] = useState({
-    name: '',
-    price: '',
-    quantity: '1',
-    description: '',
+    name: editingItem?.name || '',
+    price: editingItem?.price?.toString() || '',
+    quantity: editingItem?.quantity?.toString() || '1',
+    description: editingItem?.description || '',
   });
+
+  useEffect(() => {
+    if (editingItem) {
+      setItem({
+        name: editingItem.name,
+        price: editingItem.price.toString(),
+        quantity: editingItem.quantity.toString(),
+        description: editingItem.description || '',
+      });
+    }
+  }, [editingItem]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (item.name && item.price) {
-      onAdd({
+      const newItem = {
         name: item.name,
         price: parseFloat(item.price),
         quantity: parseInt(item.quantity),
         description: item.description || undefined,
-      });
+      };
+
+      if (editingIndex !== undefined && onEdit) {
+        onEdit(newItem, editingIndex);
+      } else {
+        onAdd(newItem);
+      }
       setItem({ name: '', price: '', quantity: '1', description: '' });
     }
   };
@@ -35,18 +57,18 @@ const ItemForm: React.FC<ItemFormProps> = ({ onAdd, template }) => {
           type="text"
           value={item.name}
           onChange={(e) => setItem(prev => ({ ...prev, name: e.target.value }))}
-          placeholder={template.itemLabel}
-          className="rounded-lg border-gray-200 focus:border-blue-500 focus:ring-blue-500"
+          placeholder={t(template.itemLabel)}
+          className="rounded-lg border border-gray-300 bg-white dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 hover:border-gray-400 hover:bg-gray-50 dark:hover:bg-gray-600 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-500/20 dark:focus:ring-blue-400/20 focus:outline-none px-2 py-1 text-base transition-colors duration-200"
           required
         />
         <input
           type="number"
           value={item.price}
           onChange={(e) => setItem(prev => ({ ...prev, price: e.target.value }))}
-          placeholder={template.priceLabel}
+          placeholder={t(template.priceLabel)}
           step="0.01"
           min="0"
-          className="rounded-lg border-gray-200 focus:border-blue-500 focus:ring-blue-500"
+          className="rounded-lg border border-gray-300 bg-white dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 hover:border-gray-400 hover:bg-gray-50 dark:hover:bg-gray-600 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-500/20 dark:focus:ring-blue-400/20 focus:outline-none px-2 py-1 text-base transition-colors duration-200"
           required
         />
       </div>
@@ -55,8 +77,8 @@ const ItemForm: React.FC<ItemFormProps> = ({ onAdd, template }) => {
           type="text"
           value={item.description}
           onChange={(e) => setItem(prev => ({ ...prev, description: e.target.value }))}
-          placeholder="Description (optional)"
-          className="w-full rounded-lg border-gray-200 focus:border-blue-500 focus:ring-blue-500"
+          placeholder={t('description')}
+          className="w-full rounded-lg border border-gray-300 bg-white dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 hover:border-gray-400 hover:bg-gray-50 dark:hover:bg-gray-600 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-500/20 dark:focus:ring-blue-400/20 focus:outline-none px-2 py-1 text-base transition-colors duration-200"
         />
       )}
       <div className="flex gap-4">
@@ -64,17 +86,17 @@ const ItemForm: React.FC<ItemFormProps> = ({ onAdd, template }) => {
           type="number"
           value={item.quantity}
           onChange={(e) => setItem(prev => ({ ...prev, quantity: e.target.value }))}
-          placeholder={template.quantityLabel}
+          placeholder={t(template.quantityLabel)}
           min="1"
-          className="w-24 rounded-lg border-gray-200 focus:border-blue-500 focus:ring-blue-500"
+          className="w-28 rounded-lg border border-gray-300 bg-white dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 hover:border-gray-400 hover:bg-gray-50 dark:hover:bg-gray-600 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-500/20 dark:focus:ring-blue-400/20 focus:outline-none px-2 py-1 text-base transition-colors duration-200"
           required
         />
         <button
           type="submit"
-          className="flex-1 bg-gray-100 text-gray-600 py-2 px-4 rounded-lg font-medium hover:bg-gray-200 flex items-center justify-center gap-2"
+          className="flex-1 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 py-1 px-3 rounded-lg font-medium hover:bg-gray-200 dark:hover:bg-gray-600 flex items-center justify-center gap-3 border border-gray-200 dark:border-gray-600 transition-colors duration-200 text-base"
         >
-          <Plus className="w-5 h-5" />
-          Add {template.itemLabel}
+          {editingIndex !== undefined ? <Check className="w-5 h-5 text-green-500" /> : <Plus className="w-5 h-5" />}
+          {editingIndex !== undefined ? t('edit') : t('add')}{i18n.language === 'zh' ? '' : ' '}{t(template.itemLabel)}
         </button>
       </div>
     </form>

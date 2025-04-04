@@ -1,5 +1,3 @@
-import { Store, Coffee, Building2, Stethoscope, Briefcase } from 'lucide-react';
-
 export interface ReceiptItem {
   name: string;
   price: number;
@@ -11,6 +9,21 @@ export interface PaymentInfo {
   method: string;
   cardLastFour?: string;
   transactionId: string;
+}
+
+export interface Receipt {
+  storeName: string;
+  date: string;
+  time: string;
+  items: ReceiptItem[];
+  template: ReceiptTemplate;
+  receiptNumber: string;
+  roomNumber: string;
+  patientId: string;
+  serviceDate: string;
+  invoiceNumber: string;
+  footerText: string;
+  paymentInfo: PaymentInfo;
 }
 
 export interface ReceiptTemplate {
