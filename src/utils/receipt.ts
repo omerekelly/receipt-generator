@@ -54,9 +54,10 @@ export const generateReceiptNumber = () => {
   return `${timestamp}${random}`;
 };
 
-export const formatCurrency = (amount: number): string => {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-  }).format(amount);
+export const renderFormatCurrency = (language: string) => (amount: number): string => {
+  const currency = language === 'zh' ? 'CNY' : 'USD';
+    return new Intl.NumberFormat(language, {
+      style: 'currency',
+      currency: currency,
+    }).format(amount);
 };

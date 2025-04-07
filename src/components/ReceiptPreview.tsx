@@ -3,7 +3,7 @@ import { motion, AnimatePresence, PanInfo } from 'framer-motion';
 import { CreditCard } from 'lucide-react';
 import Barcode from 'react-barcode';
 import { useTranslation } from 'react-i18next';
-import { formatCurrency, TAX_RATE } from '../utils/receipt';
+import { renderFormatCurrency, TAX_RATE } from '../utils/receipt';
 
 interface ReceiptPreviewProps {
   data: {
@@ -55,10 +55,12 @@ const ReceiptPreview: React.FC<ReceiptPreviewProps> = ({ data, isPrinting, total
   const subtotal = total;
   const tax = data.template.showTax ? subtotal * TAX_RATE : 0;
   const grandTotal = subtotal + tax;
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [isRipping, setIsRipping] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
   const [isNewReceiptVisible, setIsNewReceiptVisible] = useState(true);
+
+  const formatCurrency = renderFormatCurrency(i18n.language);
 
   const handleRipReceipt = () => {
     if (!isAnimating) {
