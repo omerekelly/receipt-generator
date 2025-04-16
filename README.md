@@ -6,14 +6,14 @@
 一个由 Trae AI 完全生成的现代化收据生成器应用，支持多种模板、多语言和收据导出功能。基于React + TypeScript + Tailwind CSS构建，提供PWA支持。
 
 ## 🦄 一键部署
-已支持 Vercel ，快来私有化部署拥有属于你自己的应用。 后续更新可以在 fork 的仓库中 sync 一下到最新 commit 即可触发重新部署。
+已支持 Vercel，快来私有化部署拥有属于你自己的应用。后续更新可以在 fork 的仓库中 sync 一下到最新 commit 即可触发重新部署。
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FFatDoge%2Freceipt-generator&project-name=recerpt-generator&repository-name=recerpt-generator)
 
 ## ✨ 功能特性
 
 - 📝 多种收据模板选择
-- 🌍 支持多语言（中文/英文）
+- 🌍 支持多语言（中文/英文）与对应货币格式
 - 🖨️ 一键生成收据
 - 💾 下载收据为图片
 - 🧾 自定义商家名称、日期、商品项等
@@ -31,7 +31,6 @@
 - **PWA支持**: Service Worker + Web Manifest
 
 ## 🚀 快速开始
-
 ### 开发环境要求
 
 - Node.js 18+ 
