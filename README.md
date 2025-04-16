@@ -3,6 +3,8 @@
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Live Demo](https://img.shields.io/badge/demo-live-green.svg)](https://receipt-generator-ten.vercel.app/)
 
+中文 | [English](README.en.md)
+
 一个由 Trae AI 完全生成的现代化收据生成器应用，支持多种模板、多语言和收据导出功能。基于React + TypeScript + Tailwind CSS构建，提供PWA支持。
 
 ## 🦄 一键部署
