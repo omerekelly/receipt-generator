@@ -10,7 +10,7 @@ import ReceiptPreview from './components/ReceiptPreview';
 import ItemForm from './components/ItemForm';
 import ThemeToggle from './components/ThemeToggle';
 import GithubLink from './components/GithubLink';
-import html2canvas from 'html2canvas';
+import { snapdom } from '@zumer/snapdom';
 
 function App() {
   const { t, i18n } = useTranslation();
@@ -158,17 +158,19 @@ function App() {
     try {
       if (!receiptRef.current || isGenerating) return;
 
-      const canvas = await html2canvas(receiptRef.current, {
-        scale: 4,
-        logging: false,
-        useCORS: true,
-        allowTaint: true,
+      const result = await snapdom(receiptRef.current, {
+        scale: 1,
+        embedFonts: true,
+        compress: true,
+        backgroundColor: 'transparent', // 设置透明背景，去除锯齿外的白色部分
       });
 
-      const link = document.createElement('a');
-      link.download = `receipt-${receiptData.receiptNumber}.png`;
-      link.href = canvas.toDataURL('image/png');
-      link.click();
+      // 直接使用snapdom的download方法下载图片
+      await result.download({
+        format: 'png',
+        filename: `receipt-${receiptData.receiptNumber}`,
+        backgroundColor: 'transparent' // 确保下载时也使用透明背景
+      });
     } catch (error) {
       console.error('Failed to download receipt:', error);
     }
