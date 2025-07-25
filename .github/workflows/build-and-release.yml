@@ -45,7 +45,6 @@ jobs:
         run: pnpm install
         
       - name: Build and release Electron app
-        if: matrix.os == 'macos-latest' # 👈 只有 macOS 执行发布
         run: pnpm run electron:publish
         env:
           GH_TOKEN: ${{ secrets.GH_PAT }}
