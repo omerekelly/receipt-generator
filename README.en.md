@@ -30,6 +30,7 @@ Vercel deployment is now supported. Deploy your own instance with a single click
 - **State Management**: React Context
 - **Internationalization**: i18next
 - **Build Tool**: Vite
+- **Desktop App**: Electron
 - **PWA Support**: Service Worker + Web Manifest
 
 ## 🚀 Quick Start
@@ -63,6 +64,9 @@ pnpm run dev
 ```bash
 # Build for production
 pnpm run build
+
+# Build desktop application
+pnpm run build:electron
 ```
 
 ## 📁 Project Structure
@@ -70,12 +74,16 @@ pnpm run build
 ```
 src/
 ├── components/     # React components
-├── context/        # React Context
-├── data/          # Static data and templates
-├── locales/       # Internationalization files
-├── styles/        # Global styles
-├── utils/         # Utility functions
-└── App.tsx        # Application entry
+├── context/      # React Context
+├── data/        # Static data and templates
+├── locales/     # Internationalization files
+├── styles/      # Global styles
+├── utils/       # Utility functions
+└── App.tsx      # Application entry
+
+electron/        # Electron main process code
+├── main.ts      # Electron main process entry
+└── preload.ts   # Preload script
 ```
 
 ## 📄 Usage Guide

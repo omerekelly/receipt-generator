@@ -30,6 +30,7 @@
 - **状态管理**: React Context
 - **国际化**: i18next
 - **构建工具**: Vite
+- **桌面应用**: Electron
 - **PWA支持**: Service Worker + Web Manifest
 
 ## 🚀 快速开始
@@ -63,6 +64,9 @@ pnpm run dev
 ```bash
 # 构建生产版本
 pnpm run build
+
+# 构建桌面应用
+pnpm run build:electron
 ```
 
 ## 📁 项目结构
@@ -70,12 +74,16 @@ pnpm run build
 ```
 src/
 ├── components/     # React组件
-├── context/        # React Context
-├── data/          # 静态数据和模板
-├── locales/       # 国际化文件
-├── styles/        # 全局样式
-├── utils/         # 工具函数
-└── App.tsx        # 应用入口
+├── context/      # React Context
+├── data/        # 静态数据和模板
+├── locales/     # 国际化文件
+├── styles/      # 全局样式
+├── utils/       # 工具函数
+└── App.tsx      # 应用入口
+
+electron/        # Electron 主进程代码
+├── main.ts      # Electron 主进程入口
+└── preload.ts   # 预加载脚本
 ```
 
 ## 📄 使用说明
