@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Plus, Check } from 'lucide-react';
+import { Check, Plus } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ReceiptTemplate } from '../utils/receipt';
 
@@ -13,9 +13,10 @@ interface ItemFormProps {
 
 const ItemForm: React.FC<ItemFormProps> = ({ onAdd, onEdit, template, editingItem, editingIndex }) => {
   const { t, i18n } = useTranslation();
+  const isRealEstate = template.fields.purchaseAmount;
   const [item, setItem] = useState({
     name: editingItem?.name || '',
-    price: editingItem?.price?.toString() || '',
+    price: editingItem?.price?.toString() || (isRealEstate ? '0' : ''),
     quantity: editingItem?.quantity?.toString() || '1',
     description: editingItem?.description || '',
   });
@@ -33,10 +34,10 @@ const ItemForm: React.FC<ItemFormProps> = ({ onAdd, onEdit, template, editingIte
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (item.name && item.price) {
+    if (item.name && (item.price || isRealEstate)) {
       const newItem = {
         name: item.name,
-        price: parseFloat(item.price),
+        price: parseFloat(item.price) || 0,
         quantity: parseInt(item.quantity),
         description: item.description || undefined,
       };
@@ -46,7 +47,12 @@ const ItemForm: React.FC<ItemFormProps> = ({ onAdd, onEdit, template, editingIte
       } else {
         onAdd(newItem);
       }
-      setItem({ name: '', price: '', quantity: '1', description: '' });
+      setItem({ 
+        name: '', 
+        price: isRealEstate ? '0' : '', 
+        quantity: '1', 
+        description: '' 
+      });
     }
   };
 
@@ -65,11 +71,11 @@ const ItemForm: React.FC<ItemFormProps> = ({ onAdd, onEdit, template, editingIte
           type="number"
           value={item.price}
           onChange={(e) => setItem(prev => ({ ...prev, price: e.target.value }))}
-          placeholder={t(template.priceLabel)}
+          placeholder={isRealEstate ? "0 (Optional)" : t(template.priceLabel)}
           step="0.01"
           min="0"
           className="rounded-lg border border-gray-300 bg-white dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 hover:border-gray-400 hover:bg-gray-50 dark:hover:bg-gray-600 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-500/20 dark:focus:ring-blue-400/20 focus:outline-none px-2 py-1 text-base transition-colors duration-200"
-          required
+          required={!isRealEstate}
         />
       </div>
       {template.fields.description && (

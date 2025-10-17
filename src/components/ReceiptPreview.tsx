@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { motion, AnimatePresence, PanInfo } from 'framer-motion';
+import { AnimatePresence, motion, PanInfo } from 'framer-motion';
 import { CreditCard } from 'lucide-react';
+import React, { useState } from 'react';
 import Barcode from 'react-barcode';
 import { useTranslation } from 'react-i18next';
 import { renderFormatCurrency, TAX_RATE } from '../utils/receipt';
@@ -32,6 +32,9 @@ interface ReceiptPreviewProps {
         patientId?: boolean;
         serviceDate?: boolean;
         invoiceNumber?: boolean;
+        propertyAddress?: boolean;
+        purchaseAmount?: boolean;
+        balancePayment?: boolean;
       };
     };
     receiptNumber: string;
@@ -39,6 +42,9 @@ interface ReceiptPreviewProps {
     patientId?: string;
     serviceDate?: string;
     invoiceNumber?: string;
+    propertyAddress?: string;
+    purchaseAmount?: number;
+    balancePayment?: number;
     paymentInfo: {
       method: string;
       cardLastFour?: string;
@@ -55,6 +61,7 @@ const ReceiptPreview: React.FC<ReceiptPreviewProps> = ({ data, isPrinting, total
   const subtotal = total;
   const tax = data.template.showTax ? subtotal * TAX_RATE : 0;
   const grandTotal = subtotal + tax;
+  
   const { t, i18n } = useTranslation();
   const [isRipping, setIsRipping] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
@@ -78,7 +85,7 @@ const ReceiptPreview: React.FC<ReceiptPreviewProps> = ({ data, isPrinting, total
     }
   };
 
-  const handleDragEnd = (event: MouseEvent | TouchEvent, info: PanInfo) => {
+  const handleDragEnd = (_event: MouseEvent | TouchEvent, info: PanInfo) => {
     const { point, offset } = info;
     const { x, y } = point;
     const receiptElement = receiptRef.current;
@@ -145,6 +152,11 @@ const ReceiptPreview: React.FC<ReceiptPreviewProps> = ({ data, isPrinting, total
               {data.template.fields.invoiceNumber && data.invoiceNumber && (
                 <p className="text-sm text-gray-600">{t('invoiceNumber')}: {data.invoiceNumber}</p>
               )}
+              
+              {/* Real Estate specific fields */}
+              {data.template.fields.propertyAddress && data.propertyAddress && (
+                <p className="text-sm text-gray-600">{t('propertyAddress')}: {data.propertyAddress}</p>
+              )}
             </div>
 
             {/* Divider */}
@@ -180,22 +192,52 @@ const ReceiptPreview: React.FC<ReceiptPreviewProps> = ({ data, isPrinting, total
 
             {/* Totals */}
             <div className="border-t border-dashed border-gray-300 pt-4 mt-4 space-y-2">
-              <div className="flex justify-between text-sm">
-                <span>{t('subtotal')}</span>
-                <span>{formatCurrency(subtotal)}</span>
-              </div>
-              
-              {data.template.showTax && (
-                <div className="flex justify-between text-sm">
-                  <span>{t('tax')} ({(TAX_RATE * 100).toFixed(2)}%)</span>
-                  <span>{formatCurrency(tax)}</span>
-                </div>
-              )}
+              {data.template.fields.purchaseAmount ? (
+                <>
+                  <div className="flex justify-between text-sm">
+                    <span>{t('purchaseAmount')}</span>
+                    <span>{formatCurrency(subtotal)}</span>
+                  </div>
+                  
+                  {data.template.showTax && (
+                    <div className="flex justify-between text-sm">
+                      <span>{t('tax')} ({(TAX_RATE * 100).toFixed(2)}%)</span>
+                      <span>{formatCurrency(tax)}</span>
+                    </div>
+                  )}
 
-              <div className="flex justify-between text-lg font-bold pt-2 border-t border-dashed border-gray-300">
-                <span>{t('total')}</span>
-                <span>{formatCurrency(grandTotal)}</span>
-              </div>
+                  <div className="flex justify-between text-lg font-bold pt-2 border-t border-dashed border-gray-300">
+                    <span>{t('total')}</span>
+                    <span>{formatCurrency(grandTotal)}</span>
+                  </div>
+
+                  {data.balancePayment && data.balancePayment > 0 && (
+                    <div className="flex justify-between text-sm text-orange-600 dark:text-orange-400 pt-2">
+                      <span>{t('balancePayment')}</span>
+                      <span>{formatCurrency(data.balancePayment)}</span>
+                    </div>
+                  )}
+                </>
+              ) : (
+                <>
+                  <div className="flex justify-between text-sm">
+                    <span>{t('subtotal')}</span>
+                    <span>{formatCurrency(subtotal)}</span>
+                  </div>
+                  
+                  {data.template.showTax && (
+                    <div className="flex justify-between text-sm">
+                      <span>{t('tax')} ({(TAX_RATE * 100).toFixed(2)}%)</span>
+                      <span>{formatCurrency(tax)}</span>
+                    </div>
+                  )}
+
+                  <div className="flex justify-between text-lg font-bold pt-2 border-t border-dashed border-gray-300">
+                    <span>{t('total')}</span>
+                    <span>{formatCurrency(grandTotal)}</span>
+                  </div>
+                </>
+              )}
 
               {/* Payment Info */}
               <div className="pt-4 text-sm space-y-1">
@@ -225,7 +267,7 @@ const ReceiptPreview: React.FC<ReceiptPreviewProps> = ({ data, isPrinting, total
                 />
               </div>
               <p className="text-sm text-gray-600">{t(data.footerText) || t('thankYou')}</p>
-              <p className="text-xs text-gray-400 mt-2">{t('generatedBy')}</p>
+              {/* <p className="text-xs text-gray-400 mt-2">{t('generatedBy')}</p> */}
             </div>
           </div>
         </div>

@@ -1,4 +1,4 @@
-import { Store, Coffee, Building2, Stethoscope, Briefcase } from 'lucide-react';
+import { Briefcase, Building2, Coffee, Home, Stethoscope, Store } from 'lucide-react';
 import { ReceiptTemplate } from '../utils/receipt';
 
 export const templates: ReceiptTemplate[] = [
@@ -79,6 +79,24 @@ export const templates: ReceiptTemplate[] = [
     fields: {
       description: true,
       invoiceNumber: true,
+    },
+  },
+  {
+    id: 'realEstate',
+    name: 'templates.realEstate',
+    icon: <Home className="w-5 h-5" />,
+    defaultStoreName: 'templates.realEstateStore',
+    thermalTexture: 'https://images.unsplash.com/photo-1516541196182-6bdb0516ed27?auto=format&fit=crop&q=80&w=500',
+    showTip: false,
+    showTax: true,
+    itemLabel: 'templates.property',
+    priceLabel: 'templates.amount',
+    quantityLabel: 'templates.qty',
+    fields: {
+      description: true,
+      propertyAddress: true,
+      purchaseAmount: true,
+      balancePayment: true,
     },
   },
 ];

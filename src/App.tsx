@@ -1,16 +1,16 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Printer, Store, Package, Trash2, Save, Download, CreditCard, Languages, Edit } from 'lucide-react';
-import UpdateNotification from './components/UpdateNotification';
+import { snapdom } from '@zumer/snapdom';
+import { CreditCard, Download, Edit, Languages, Package, Printer, Save, Store, Trash2 } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import './i18n';
-import { ReceiptTemplate, ReceiptItem, generateReceiptNumber, Receipt } from './utils/receipt';
+import GithubLink from './components/GithubLink';
+import ItemForm from './components/ItemForm';
+import ReceiptPreview from './components/ReceiptPreview';
+import ThemeToggle from './components/ThemeToggle';
+import UpdateNotification from './components/UpdateNotification';
 import { getInitialReceiptData } from './data/initialData';
 import { templates } from './data/templates';
-import ReceiptPreview from './components/ReceiptPreview';
-import ItemForm from './components/ItemForm';
-import ThemeToggle from './components/ThemeToggle';
-import GithubLink from './components/GithubLink';
-import { snapdom } from '@zumer/snapdom';
+import './i18n';
+import { generateReceiptNumber, Receipt, ReceiptItem, ReceiptTemplate } from './utils/receipt';
 
 function App() {
   const { t, i18n } = useTranslation();
@@ -78,6 +78,11 @@ function App() {
   const receiptRef = useRef<HTMLDivElement>(null);
 
   const calculateTotal = () => {
+    // For real estate templates, use purchase amount if available
+    if (receiptData.template.fields.purchaseAmount && receiptData.purchaseAmount > 0) {
+      return receiptData.purchaseAmount;
+    }
+    // For other templates, sum up items
     return receiptData.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   };
 
@@ -366,6 +371,55 @@ function App() {
                   </div>
                 )}
 
+                {receiptData.template.fields.propertyAddress && (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
+                      {t('propertyAddress')}
+                    </label>
+                    <input
+                      type="text"
+                      value={receiptData.propertyAddress}
+                      onChange={(e) => setReceiptData(prev => ({ ...prev, propertyAddress: e.target.value }))}
+                      className="w-full rounded-lg border border-gray-300 bg-white dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 hover:border-gray-400 hover:bg-gray-50 dark:hover:bg-gray-600 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-500/20 dark:focus:ring-blue-400/20 focus:outline-none px-2 py-1 transition-colors duration-200"
+                      placeholder={t('enterPropertyAddress')}
+                    />
+                  </div>
+                )}
+
+                {receiptData.template.fields.purchaseAmount && (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
+                      {t('purchaseAmount')}
+                    </label>
+                    <input
+                      type="number"
+                      value={receiptData.purchaseAmount}
+                      onChange={(e) => setReceiptData(prev => ({ ...prev, purchaseAmount: parseFloat(e.target.value) || 0 }))}
+                      className="w-full rounded-lg border border-gray-300 bg-white dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 hover:border-gray-400 hover:bg-gray-50 dark:hover:bg-gray-600 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-500/20 dark:focus:ring-blue-400/20 focus:outline-none px-2 py-1 transition-colors duration-200"
+                      step="0.01"
+                      min="0"
+                      placeholder="0.00"
+                    />
+                  </div>
+                )}
+
+                {receiptData.template.fields.balancePayment && (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
+                      {t('balancePayment')}
+                    </label>
+                    <input
+                      type="number"
+                      value={receiptData.balancePayment}
+                      onChange={(e) => setReceiptData(prev => ({ ...prev, balancePayment: parseFloat(e.target.value) || 0 }))}
+                      className="w-full rounded-lg border border-gray-300 bg-white dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 hover:border-gray-400 hover:bg-gray-50 dark:hover:bg-gray-600 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-500/20 dark:focus:ring-blue-400/20 focus:outline-none px-2 py-1 transition-colors duration-200"
+                      step="0.01"
+                      min="0"
+                      placeholder="0.00"
+                    />
+                  </div>
+                )}
+
                 {/* Payment Information */}
                 <div className="space-y-4 pt-4 border-t dark:border-gray-600">
                   <h3 className="text-sm font-medium text-gray-700 dark:text-gray-200 flex items-center gap-2">
@@ -389,6 +443,7 @@ function App() {
                         <option value="Debit Card">{t('debitCard')}</option>
                         <option value="Cash">{t('cash')}</option>
                         <option value="Bank Transfer">{t('bankTransfer')}</option>
+                        <option value="Gift Card">{t('giftCard')}</option>
                       </select>
                     </div>
                     {(receiptData.paymentInfo.method === 'Credit Card' || receiptData.paymentInfo.method === 'Debit Card') && (
@@ -475,7 +530,7 @@ function App() {
               <div className="flex flex-col sm:flex-row gap-4 mt-6">
                 <button
                   onClick={handleGenerate}
-                  disabled={isGenerating || receiptData.items.length === 0}
+                  disabled={isGenerating || (receiptData.items.length === 0 && (!receiptData.template.fields.purchaseAmount || receiptData.purchaseAmount <= 0))}
                   className="w-full sm:flex-1 bg-blue-500 dark:bg-blue-600 text-white py-3 px-6 rounded-lg font-medium hover:bg-blue-600 dark:hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
                   <Save className="w-5 h-5" />

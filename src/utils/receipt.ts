@@ -22,6 +22,9 @@ export interface Receipt {
   patientId: string;
   serviceDate: string;
   invoiceNumber: string;
+  propertyAddress: string;
+  purchaseAmount: number;
+  balancePayment: number;
   footerText: string;
   paymentInfo: PaymentInfo;
 }
@@ -43,6 +46,9 @@ export interface ReceiptTemplate {
     patientId?: boolean;
     serviceDate?: boolean;
     invoiceNumber?: boolean;
+    propertyAddress?: boolean;
+    purchaseAmount?: boolean;
+    balancePayment?: boolean;
   };
 }
 
@@ -50,14 +56,18 @@ export const TAX_RATE = 0.0825; // 8.25% tax rate
 
 export const generateReceiptNumber = () => {
   const timestamp = Date.now().toString().slice(-6);
-  const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
+  const random = Math.floor(Math.random() * 1000)
+    .toString()
+    .padStart(3, "0");
   return `${timestamp}${random}`;
 };
 
-export const renderFormatCurrency = (language: string) => (amount: number): string => {
-  const currency = language === 'zh' ? 'CNY' : 'USD';
+export const renderFormatCurrency =
+  (language: string) =>
+  (amount: number): string => {
+    const currency = language === "zh" ? "CNY" : "USD";
     return new Intl.NumberFormat(language, {
-      style: 'currency',
+      style: "currency",
       currency: currency,
     }).format(amount);
-};
+  };
