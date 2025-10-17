@@ -35,6 +35,7 @@ interface ReceiptPreviewProps {
         propertyAddress?: boolean;
         purchaseAmount?: boolean;
         balancePayment?: boolean;
+        customerName?: boolean;
       };
     };
     receiptNumber: string;
@@ -45,6 +46,7 @@ interface ReceiptPreviewProps {
     propertyAddress?: string;
     purchaseAmount?: number;
     balancePayment?: number;
+    customerName?: string;
     paymentInfo: {
       method: string;
       cardLastFour?: string;
@@ -154,6 +156,9 @@ const ReceiptPreview: React.FC<ReceiptPreviewProps> = ({ data, isPrinting, total
               )}
               
               {/* Real Estate specific fields */}
+              {data.template.fields.customerName && data.customerName && (
+                <p className="text-sm text-gray-600">{t('customerName')}: {data.customerName}</p>
+              )}
               {data.template.fields.propertyAddress && data.propertyAddress && (
                 <p className="text-sm text-gray-600">{t('propertyAddress')}: {data.propertyAddress}</p>
               )}

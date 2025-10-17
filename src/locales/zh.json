@@ -47,6 +47,8 @@
     "purchaseAmount": "购买金额",
     "balancePayment": "余额付款",
     "enterPropertyAddress": "输入房产地址",
+    "customerName": "客户姓名",
+    "enterCustomerName": "输入客户姓名",
     "paymentInformation": "支付信息",
     "templates": {
       "updateNow": "立即更新",

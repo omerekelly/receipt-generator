@@ -420,6 +420,21 @@ function App() {
                   </div>
                 )}
 
+                {receiptData.template.fields.customerName && (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
+                      {t('customerName')}
+                    </label>
+                    <input
+                      type="text"
+                      value={receiptData.customerName}
+                      onChange={(e) => setReceiptData(prev => ({ ...prev, customerName: e.target.value }))}
+                      className="w-full rounded-lg border border-gray-300 bg-white dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 hover:border-gray-400 hover:bg-gray-50 dark:hover:bg-gray-600 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-500/20 dark:focus:ring-blue-400/20 focus:outline-none px-2 py-1 transition-colors duration-200"
+                      placeholder={t('enterCustomerName')}
+                    />
+                  </div>
+                )}
+
                 {/* Payment Information */}
                 <div className="space-y-4 pt-4 border-t dark:border-gray-600">
                   <h3 className="text-sm font-medium text-gray-700 dark:text-gray-200 flex items-center gap-2">

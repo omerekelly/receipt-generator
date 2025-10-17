@@ -48,6 +48,8 @@
     "purchaseAmount": "Purchase Amount",
     "balancePayment": "Balance Payment",
     "enterPropertyAddress": "Enter Property Address",
+    "customerName": "Customer Name",
+    "enterCustomerName": "Enter Customer Name",
     "paymentInformation": "Payment Information",
     "templates": {
       "retail": "Retail",

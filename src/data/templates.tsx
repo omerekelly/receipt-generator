@@ -63,6 +63,7 @@ export const templates: ReceiptTemplate[] = [
       description: true,
       patientId: true,
       serviceDate: true,
+      customerName: true,
     },
   },
   {
@@ -79,6 +80,7 @@ export const templates: ReceiptTemplate[] = [
     fields: {
       description: true,
       invoiceNumber: true,
+      customerName: true,
     },
   },
   {
@@ -97,6 +99,7 @@ export const templates: ReceiptTemplate[] = [
       propertyAddress: true,
       purchaseAmount: true,
       balancePayment: true,
+      customerName: true,
     },
   },
 ];

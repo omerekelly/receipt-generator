@@ -15,6 +15,7 @@ export const getInitialReceiptData = () => ({
   propertyAddress: "",
   purchaseAmount: 0,
   balancePayment: 0,
+  customerName: "",
   footerText: "thankYou",
   paymentInfo: {
     method: "Credit Card",

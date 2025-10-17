@@ -25,6 +25,7 @@ export interface Receipt {
   propertyAddress: string;
   purchaseAmount: number;
   balancePayment: number;
+  customerName: string;
   footerText: string;
   paymentInfo: PaymentInfo;
 }
@@ -49,6 +50,7 @@ export interface ReceiptTemplate {
     propertyAddress?: boolean;
     purchaseAmount?: boolean;
     balancePayment?: boolean;
+    customerName?: boolean;
   };
 }
 
